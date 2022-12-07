@@ -8,10 +8,8 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Calendar from 'primevue/calendar';
+import Checkbox from 'primevue/checkbox';
 
-import 'primevue/resources/themes/lara-light-purple/theme.css'; //theme
-import 'primeicons/primeicons.css'; //icons
-import 'primeflex/primeflex.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 
@@ -21,6 +19,7 @@ createApp(App).use(router)
   .component('Button', Button)
   .component('Password', Password)
   .component('Calendar', Calendar)
+  .component('Checkbox', Checkbox)
   .component('InputText', InputText)
   .component('Dialog', Dialog)
   .mount('#app')

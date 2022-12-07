@@ -1,16 +1,23 @@
 <template>
-  <Menubar :model="items">
-    <template #start>
-      <img alt="logo" src="https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png" height="40" class="mr-2">
-    </template>
-    <template #end>
-		<MegaMenu :model="megaMenu" />
-    </template>
-  </Menubar>
+ <header>
+	<div class="navbar-header">
+		<div class="container-fluid">
+			<div class="float-end">
+				<MegaMenu :model="megaMenu" />
+			</div>
+			<div>
+				<div class="navbar-brand-box">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+ </header>
+ 
   <router-view/>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref } from 'vue'
 
 import Menubar from 'primevue/menubar';
@@ -113,11 +120,43 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="scss">
 .params {
     background: #dad8d3;
     border-bottom: solid 1px gainsboro;
     display: flex;
     align-items: center;
+}
+header {
+    background: rgb(86,74,177, 0.9);
+	.navbar-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin: 0 auto;
+		height: 70px;
+		padding: 0 calc(24px / 2) 0 0;
+	}
+	.p-megamenu {
+		background: none;
+	}
+}
+.form-group {
+    &.mb-24 {
+        width: 100%;
+        margin-bottom: 24px;
+    }
+    .p-password {
+        width: 100%;
+    }
+    &.icon .pi {
+        position: absolute;
+        top: 32px;
+        left: 20px;
+    }
+}
+.form-control {
+    height: 60px;
+    padding-left: 60px !important;
 }
 </style>
