@@ -1,34 +1,40 @@
 <template>
- <header>
-	<div class="navbar-header">
-		<div class="container-fluid">
-			<div class="float-end">
-				<MegaMenu :model="megaMenu" />
-			</div>
-			<div>
-				<div class="navbar-brand-box">
-					
+	<Toast />
+	<header>
+		<div class="navbar-header">
+			<div class="container-fluid">
+				<div class="float-end">
+					<MegaMenu :model="megaMenu" />
+				</div>
+				<div>
+					<div class="navbar-brand-box">
+						
+					</div>
 				</div>
 			</div>
 		</div>
+	</header>
+	<div class="main-content-wrap" v-if="isToken">
+		<div class="overview-content-wrap card-box-style"></div>
 	</div>
- </header>
- 
-  <router-view/>
+	
+	<router-view/>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-
+import Toast from 'primevue/toast';
 import Menubar from 'primevue/menubar';
 import MegaMenu from 'primevue/megamenu';
-import store from './store';
+import { useToast } from "primevue/usetoast";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: 'App',
   components: {
     Menubar,
-	MegaMenu 
+	MegaMenu,
+	Toast
   },
   data () {
     return {
@@ -36,6 +42,10 @@ export default defineComponent({
   },
 
   setup() {
+    const store = useStore();
+    const toast = useToast();
+	const isAuth = store.dispatch("auth/checkToken")
+	const isToken = !!localStorage.getItem('accessToken')
 	const megaMenu = [
                 {
                     label: 'Videos', icon: 'pi pi-fw pi-video',
@@ -113,22 +123,25 @@ export default defineComponent({
 			}
 		}
 	]);
-	return { items,megaMenu }
+	return { isToken,items,megaMenu }
 	},
     methods: {
 	}
 })
 </script>
 
-<style lang="scss">
-.params {
-    background: #dad8d3;
-    border-bottom: solid 1px gainsboro;
-    display: flex;
-    align-items: center;
+<style lang="scss" >
+
+body {
+    font-family: "Poppins", sans-serif;
 }
-header {
-    background: rgb(86,74,177, 0.9);
+header {    
+	background-color: #ffffff;
+    box-shadow: 0 0 20px 3px rgb(0 0 0 / 5%);
+    border-radius: 30px;
+    padding: 30px 20px;
+    margin-top: 12px;
+    margin-bottom: 30px;
 	.navbar-header {
 		display: flex;
 		justify-content: space-between;
@@ -158,5 +171,12 @@ header {
 .form-control {
     height: 60px;
     padding-left: 60px !important;
+}
+.card-box-style {
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 2px 15px rgb(0 0 0 / 2%);
+    border-radius: 30px;
+    padding: 30px;
+    margin-bottom: 24px;
 }
 </style>

@@ -9,13 +9,14 @@ import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Calendar from 'primevue/calendar';
 import Checkbox from 'primevue/checkbox';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap';
+import ToastService from 'primevue/toastservice';
+import Toast from 'primevue/toast';
 
 createApp(App).use(router)
   .use(store)
   .use(PrimeVue)
+  .use(ToastService)
+  .component('Toast', Toast)
   .component('Button', Button)
   .component('Password', Password)
   .component('Calendar', Calendar)

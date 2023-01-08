@@ -22,12 +22,12 @@
                  </div>
                 <form @submit.prevent="handleSubmit(!v$.$invalid)" class="account-wrap">
                     <div class="form-group mb-24 icon p-input-icon-left">
-                        <i class="pi pi-user" />
-                        <InputText type="text" v-model="v$.name.$model" :class="{'p-invalid':v$.name.$invalid && submitted}" placeholder="Имя" class="form-control" />
-                        <small v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response" class="p-error">{{v$.name.required.$message.replace('Value', 'Name')}}</small>
+                        <i class="pi pi-user"></i>
+                        <InputText type="text" v-model="v$.username.$model" :class="{'p-invalid':v$.username.$invalid && submitted}" placeholder="Имя" class="form-control" />
+                        <small v-if="(v$.username.$invalid && submitted) || v$.username.$pending.$response" class="p-error">{{v$.username.required.$message.replace('Value', 'Name')}}</small>
                     </div>                    
                     <div class="form-group mb-24 icon p-input-icon-left">
-                        <i class="pi pi-search" />
+                        <i class="pi pi-search"></i>
                         <InputText type="text" id="email" v-model="v$.email.$model" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error" class="form-control" />
                     </div>                  
                     <div class="form-group mb-24 icon p-input-icon-left">
@@ -36,15 +36,15 @@
                                 <h6>Pick a password</h6>
                             </template>
                             <template #footer="sp">
-                                        {{sp.level}}
-                                        <Divider />
-                                        <p class="mt-2">Suggestions</p>
-                                        <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
-                                            <li>At least one lowercase</li>
-                                            <li>At least one uppercase</li>
-                                            <li>At least one numeric</li>
-                                            <li>Minimum 8 characters</li>
-                                        </ul>
+                                {{sp.level}}
+                                <Divider />
+                                <p class="mt-2">Suggestions</p>
+                                <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+                                    <li>At least one lowercase</li>
+                                        <li>At least one uppercase</li>
+                                        <li>At least one numeric</li>
+                                        <li>Minimum 8 characters</li>
+                                    </ul>
                             </template>
                         </Password>
                     </div>
@@ -60,71 +60,88 @@
 <script lang="ts">
 import { email, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
+import { useToast } from "primevue/usetoast";
+import { useStore } from "vuex";
+import { UserCreate } from "../models/interfaces";
+import { defineComponent } from 'vue';
 
-export default {
-    setup: () => ({ v$: useVuelidate() }),
-    data() {
+export default defineComponent({
+    data: () => ({
+      username: '',
+      email: '',
+      password: '',
+      submitted: false,
+      showMessage: false,
+    }),
+    setup() {
+        const store = useStore();
+        const toast = useToast();
+        const showError = () => {
+            toast.add({severity:'error', summary: 'Info Message', detail:'Неверный логин или пароль', life: 3000});
+        }
+        
         return {
-            name: '',
-            email: '',
-            password: '',
-            submitted: false,
-            showMessage: false
+            showError,
+            store,
+            toast,
+            v$: useVuelidate(),
         }
     },
-  validations() {
-      return {
-          name: {
-              required
-          },
-          email: {
-              required,
-              email
-          },
-          password: {
-              required
-          },
-      }
-  },
-  methods: {
-    handleRegister() {
-      const user = {
-        username: this.name,
-        password: this.password,
-        email: this.email
-      }
-      this.$store.dispatch("auth/register", user).then(
-        (data: any) => {
-            this.toggleDialog();
+    validations() {
+        return {
+            username: {
+                required
+            },
+            email: {
+                required,
+                email
+            },
+            password: {
+                required
+            },
+        }
+    },
+    methods: {
+        handleRegister(): void {
+            const user: UserCreate = {
+                username: this.username,
+                password: this.password,
+                email: this.email
+            };
+            this.store.dispatch("auth/register", user).then(
+                (data: any) => {
+                    console.log(data)
+                    this.toggleDialog();
+                },
+                (error: any) => { 
+                    console.log(error)
+                    this.showError()
+                }
+            );
         },
-        (error: any) => {
-          this.toggleDialog();
-        }
-      );
-    },
-      handleSubmit(isFormValid: boolean) {
-          this.submitted = true;
+        handleSubmit(isFormValid: boolean): void {
+            this.submitted = true;
 
-          if (!isFormValid) {
-            return;
-          }
-          this.handleRegister()
-      },
-      toggleDialog() {
-          this.showMessage = !this.showMessage;
-      
-          if(!this.showMessage) {
-            this.resetForm();
-          }
-      },
-      resetForm() {
-          this.name = '';
-          this.email = '';
-          this.password = '';
-          this.submitted = false;
-      }
-  }
-}
+            if (!isFormValid) {
+                return;
+            }
+            this.handleRegister()
+        },
+        toggleDialog(): void {
+            this.showMessage = !this.showMessage;
+        
+            if(!this.showMessage) {
+                this.resetForm();
+            }
+        },
+        resetForm(): void {
+            this.username = '';
+            this.email = '';
+            this.password = '';
+            this.submitted = false;
+        }
+    }
+})
 </script>
 
 <style lang="scss" scoped>

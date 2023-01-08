@@ -1,152 +1,148 @@
 <template>
-    Login
-        <div class="col-md-12">
-          <div class="card card-container">
-            <img
-              id="profile-img"
-              src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-              class="profile-img-card"
-            />
-            
-            <Form @submit="handleRegister" :validation-schema="schema">
-              <div v-if="!successful">
-                <div class="form-group">
-                  <label for="username">Username</label>
-                  <Field name="username" type="text" class="form-control" />
-                  <ErrorMessage name="username" class="error-feedback" />
-                </div>
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <Field name="email" type="email" class="form-control" />
-                  <ErrorMessage name="email" class="error-feedback" />
-                </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <Field name="password" type="password" class="form-control" />
-                  <ErrorMessage name="password" class="error-feedback" />
-                </div>
-      
-                <div class="form-group">
-                  <button class="btn btn-primary btn-block" :disabled="loading">
-                    <span
-                      v-show="loading"
-                      class="spinner-border spinner-border-sm"
-                    ></span>
-                    Sign Up
-                  </button>
-                </div>
-              </div>
-            </Form>
-      
-            <div
-              v-if="message"
-              class="alert"
-              :class="successful ? 'alert-success' : 'alert-danger'"
-            >
-              {{ message }}
-            </div>
+  <div class="account-area">
+      <div class="flex justify-content-center">
+          <div class="account-content">
+              <div class="account-header">
+                  <h3>Авторизация</h3>
+               </div>
+              <form @submit.prevent="handleSubmit(!v$.$invalid)" class="account-wrap">     
+                  <div class="form-group mb-24 icon p-input-icon-left">
+                      <i class="pi pi-search" />
+                      <InputText type="text" id="email" v-model="v$.email.$model" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error" class="form-control" />
+                  </div>                  
+                  <div class="form-group mb-24 icon p-input-icon-left">
+                      <Password id="password" :inputClass="'form-control'" v-model="v$.password.$model" :class="{'p-invalid':v$.password.$invalid && submitted}" toggleMask>
+                      </Password>
+                  </div>
+                  <div class="form-group mb-24">
+                      <Button type="submit" label="Войти" class="mt-2" />
+                  </div>
+              </form>
           </div>
-        </div>
-    </template>
-    <script lang="ts">
-    import { Form, Field, ErrorMessage } from 'vee-validate';
-    import * as yup from 'yup';
-    import { Options, Vue } from 'vue-class-component'
-      
-    @Options({
-      components: {
-        Form,
-        Field,
-        ErrorMessage,
-      },
-      props: {
-        msg: String
-      },
-      data() {
-        return {
-          message: "",
-        }
-      },
-      computed: {
-        loggedIn() {
-          return this.$store.state.auth.accessToken;
-        },
-      },
-      mounted() {
-        if (this.loggedIn) {
-          this.$router.push("/profile");
-        }
-      },
-      methods: {
-        handleRegister(user: any) {
-          this.message = "";
-          this.successful = false;
-          this.loading = true;
-          this.$store.dispatch("auth/register", user).then(
-            (data: any) => {
-              this.message = data.message;
-              this.successful = true;
-              this.loading = false;
-            },
-            (error: any) => {
-              this.message =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
-              this.successful = false;
-              this.loading = false;
-            }
-          );
-        },
-      },
-    })
-    export default class Register extends Vue {
-    
-      data() {
-        const schema = yup.object().shape({
-          username: yup
-            .string()
-            .required("Username is required!")
-            .min(3, "Must be at least 3 characters!")
-            .max(20, "Must be maximum 20 characters!"),
-          email: yup
-            .string()
-            .required("Email is required!")
-            .email("Email is invalid!")
-            .max(50, "Must be maximum 50 characters!"),
-          password: yup
-            .string()
-            .required("Password is required!")
-            .min(6, "Must be at least 6 characters!")
-            .max(40, "Must be maximum 40 characters!"),
-        });
-        return {
-          successful: false,
-          loading: false,
-          message: "",
-          schema,
-        };
-      }
+      </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { email, required } from "@vuelidate/validators";
+import { useVuelidate } from "@vuelidate/core";
+import { useToast } from "primevue/usetoast";
+import { useStore } from "vuex";
+
+export default {
+  setup() {
+    const store = useStore();
+    const toast = useToast();
+    const showSuccess = () => {
+      toast.add({severity:'success', summary: 'Info Message', detail:'Message Content', life: 3000});
     }
-    </script>
-      
-      <!-- Add "scoped" attribute to limit CSS to this component only -->
-      <style scoped>
-      h3 {
-        margin: 40px 0 0;
+    return {
+      showSuccess,
+      store,
+      toast,
+      v$: useVuelidate()
+    }
+  },
+  data() {
+    return {
+      email: '',
+      password: '',
+      submitted: false,
+      showMessage: false
+    }
+  },
+validations() {
+  return {
+    email: {
+      required,
+      email
+    },
+    password: {
+        required
+    },
+  }
+},
+methods: {
+  /*handleRegister(): void {
+    const user = {
+      password: this.password,
+      email: this.email
+    };
+    this.$store.dispatch("auth/login", user).then(
+      (data: any) => {
+        this.showSuccess();
+        this.resetForm()
+      },
+      (error: any) => { 
       }
-      ul {
-        list-style-type: none;
-        padding: 0;
-      }
-      li {
-        display: inline-block;
-        margin: 0 10px;
-      }
-      a {
-        color: #42b983;
-      }
-      </style>
-      
+    );
+  },
+  handleSubmit(isFormValid: boolean) {
+      this.submitted = true;
+      this.handleRegister()
+  },
+  resetForm(): void {
+        this.email = '';
+        this.password = '';
+      this.submitted = false;
+  }*/
+}
+}
+</script>
+
+<style lang="scss" scoped>
+.form-group {
+  &.mb-24 {
+      width: 100%;
+      margin-bottom: 24px;
+  }
+  .p-password {
+      width: 100%;
+  }
+  &.icon .pi {
+      position: absolute;
+      top: 32px;
+      left: 20px;
+  }
+}
+.account-area {
+  height: 100%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  background: rgb(39,127,224);
+  background: linear-gradient(135deg, rgba(39,127,224,1) 0%, rgba(51,152,192,1) 41%, rgba(63,176,172,1) 100%);
+}
+.account-content {
+  max-width: 510px;
+  margin: auto;
+  background-color: #ffffff;
+  border-radius: 30px;
+  padding: 50px;
+}
+.account-header {
+  text-align: center;
+  h3 {
+      margin-bottom: 30px;
+      padding-top: 30px;
+      font-size: 20px;
+  }
+}
+.account-wrap .p-button{
+  color: #ffffff;
+  width: 100%;
+  padding: 23px 20px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1;
+  transition: all ease 0.5s;
+  text-align: center;
+  border: none;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  display: inline-table;
+  background-color: #1765FD;
+  border-radius: 10px;
+}
+
+</style>

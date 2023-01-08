@@ -1,10 +1,12 @@
 import AuthService from '../services/auth.service'
+import { UserCreateResult } from "../models/interfaces";
 
 export const auth = {
   namespaced: true,
   state: {
     accessToken: false,
-    user: []
+    user: [],
+    loggedIn: false
   },
   actions: {
     login({ commit }: any, user: any) {
@@ -26,8 +28,9 @@ export const auth = {
     register({ commit }: any, user: any) {
       return AuthService.register(user).then(
         (response: any) => {
-          commit('registerSuccess');
-          return Promise.resolve(response.data);
+          console.log(response)
+          commit('registerSuccess', response);
+          return Promise.resolve(response);
         },
         (error: any) => {
           commit('registerFailure');
@@ -36,23 +39,25 @@ export const auth = {
       );
     },
     checkToken({ commit }: any) {{
-      commit('updateToken', localStorage.getItem('accessToken'));
+      commit('updateToekn', localStorage.getItem('accessToken'));
     }},
   },
   mutations: {
     loginSuccess(state: any, user: any) {
-      state.status.loggedIn = true;
+      state.loggedIn = true;
       state.user = user;
     },
     loginFailure(state: any) {
-      state.status.loggedIn = false;
+      state.loggedIn = false;
       state.user = null;
     },
-    registerSuccess(state: any) {
-      state.status.loggedIn = false;
+    registerSuccess(state: any, result: any) {
+      console.log(result)
+      state.loggedIn = true;
+      localStorage.setItem('accessToken', result.id)
     },
     registerFailure(state: any) {
-      state.status.loggedIn = false;
+      state.loggedIn = false;
     },
     updateToken(state: any, payload: string) {
       state.accessToken = payload;
