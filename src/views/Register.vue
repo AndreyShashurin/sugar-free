@@ -27,7 +27,7 @@
                         <small v-if="(v$.username.$invalid && submitted) || v$.username.$pending.$response" class="p-error">{{v$.username.required.$message.replace('Value', 'Name')}}</small>
                     </div>                    
                     <div class="form-group mb-24 icon p-input-icon-left">
-                        <i class="pi pi-search"></i>
+                        <i class="pi pi-email"></i>
                         <InputText type="text" id="email" v-model="v$.email.$model" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error" class="form-control" />
                     </div>                  
                     <div class="form-group mb-24 icon p-input-icon-left">
@@ -110,11 +110,9 @@ export default defineComponent({
             };
             this.store.dispatch("auth/register", user).then(
                 (data: any) => {
-                    console.log(data)
                     this.toggleDialog();
                 },
                 (error: any) => { 
-                    console.log(error)
                     this.showError()
                 }
             );
@@ -144,7 +142,10 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.form-control {
+    padding-left: 25px;
+}
 .form-group {
     &.mb-24 {
         width: 100%;
@@ -155,12 +156,18 @@ export default defineComponent({
     }
     &.icon .pi {
         position: absolute;
-        top: 32px;
-        left: 20px;
+        left: 8px;
+        top: 22px;
+        font-size: 14px;
     }
 }
+
 .account-area {
-    height: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    height: 100vh;
     padding-top: 50px;
     padding-bottom: 50px;
     background: rgb(39,127,224);
@@ -199,6 +206,13 @@ export default defineComponent({
     border-radius: 10px;
 }
 
+.pi-email {
+    background-image: url('@/assets/email.png');
+    height: 16px;
+    width: 15px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
 </style>
 
   

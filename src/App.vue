@@ -1,23 +1,27 @@
 <template>
 	<Toast />
-	<header>
+	<header v-if="iaAuth">
 		<div class="navbar-header">
-			<div class="container-fluid">
-				<div class="float-end">
-					<MegaMenu :model="megaMenu" />
+		<Menubar :model="items">
+			<template #start>
+				<div class="navbar-brand-box">
+					logo
 				</div>
-				<div>
-					<div class="navbar-brand-box">
-						
-					</div>
-				</div>
-			</div>
+			</template>
+			<template #item="{item}">
+					<a :href="item.url">{{item.label}}</a>
+			</template>
+			<template #end>
+				    <div class="profile-nav-item pt-0 pb-0">
+                        <div class="avatar d-flex align-items-center">
+                            <img src="https://imgholder.ru/48x48/8493a8/adb9ca&text=аватарка" class="avatar" alt="avatar">
+					        <MegaMenu :model="megaMenu" />
+                        </div>
+                    </div>
+			</template>
+		</Menubar>
 		</div>
 	</header>
-	<div class="main-content-wrap" v-if="isToken">
-		<div class="overview-content-wrap card-box-style"></div>
-	</div>
-	
 	<router-view/>
 </template>
 
@@ -30,44 +34,31 @@ import { useToast } from "primevue/usetoast";
 import { useStore } from "vuex";
 
 export default defineComponent({
-  name: 'App',
-  components: {
-    Menubar,
-	MegaMenu,
-	Toast
-  },
-  data () {
-    return {
-        }
-  },
-
+	name: 'App',
+	components: {
+		Menubar,
+		MegaMenu,
+		Toast
+	},
+	data() {
+		return 
+	},
   setup() {
     const store = useStore();
     const toast = useToast();
-	const isAuth = store.dispatch("auth/checkToken")
-	const isToken = !!localStorage.getItem('accessToken')
+	
+  	store.dispatch('auth/checkToken')
+	const iaAuth = store.state.auth.accessToken
 	const megaMenu = [
                 {
-                    label: 'Videos', icon: 'pi pi-fw pi-video',
+                    label: store.state.auth.user.name,
                     items: [
                         [
                             {
-                                label: 'Video 1',
-                                items: [{label: 'Video 1.1'}, {label: 'Video 1.2'}]
+                                label: 'Профиль',
                             },
                             {
-                                label: 'Video 2',
-                                items: [{label: 'Video 2.1'}, {label: 'Video 2.2'}]
-                            }
-                        ],
-                        [
-                            {
-                                label: 'Video 3',
-                                items: [{label: 'Video 3.1'}, {label: 'Video 3.2'}]
-                            },
-                            {
-                                label: 'Video 4',
-                                items: [{label: 'Video 4.1'}, {label: 'Video 4.2'}]
+                                label: 'Настройки',
                             }
                         ]
                     ]
@@ -108,12 +99,12 @@ export default defineComponent({
 		{
 			label: 'Войти',
 			icon:'pi pi-fw pi-power-off',
-			to: '/login'
+			url: '/login'
 		},
 		{
 			label: 'Регистрация',
 			icon:'pi pi-fw pi-power-off',
-			to: '/signup'
+			url: '/signup'
 		},
 		{
 			label: 'Выйти',
@@ -123,17 +114,25 @@ export default defineComponent({
 			}
 		}
 	]);
-	return { isToken,items,megaMenu }
+	return { iaAuth,items,megaMenu }
 	},
     methods: {
 	}
 })
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 
 body {
     font-family: "Poppins", sans-serif;
+	font-size: 16px;
+	color: #292d32;
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: "Poppins", sans-serif;
+	font-size: 16px;
+	color: #292d32;
+
 }
 header {    
 	background-color: #ffffff;
@@ -142,14 +141,6 @@ header {
     padding: 30px 20px;
     margin-top: 12px;
     margin-bottom: 30px;
-	.navbar-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin: 0 auto;
-		height: 70px;
-		padding: 0 calc(24px / 2) 0 0;
-	}
 	.p-megamenu {
 		background: none;
 	}
@@ -178,5 +169,9 @@ header {
     border-radius: 30px;
     padding: 30px;
     margin-bottom: 24px;
+}
+.avatar {
+    margin-right: 15px;
+    border-radius: 18px;
 }
 </style>

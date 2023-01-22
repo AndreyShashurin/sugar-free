@@ -5,7 +5,10 @@ export const auth = {
   namespaced: true,
   state: {
     accessToken: false,
-    user: [],
+    user: {
+      name: 'Андрей',
+      roleId: 1,
+    },
     loggedIn: false
   },
   actions: {
@@ -28,7 +31,6 @@ export const auth = {
     register({ commit }: any, user: any) {
       return AuthService.register(user).then(
         (response: any) => {
-          console.log(response)
           commit('registerSuccess', response);
           return Promise.resolve(response);
         },
@@ -39,7 +41,7 @@ export const auth = {
       );
     },
     checkToken({ commit }: any) {{
-      commit('updateToekn', localStorage.getItem('accessToken'));
+      commit('updateToken', localStorage.getItem('accessToken'));
     }},
   },
   mutations: {
@@ -52,7 +54,6 @@ export const auth = {
       state.user = null;
     },
     registerSuccess(state: any, result: any) {
-      console.log(result)
       state.loggedIn = true;
       localStorage.setItem('accessToken', result.id)
     },

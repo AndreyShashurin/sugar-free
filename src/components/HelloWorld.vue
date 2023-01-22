@@ -1,9 +1,35 @@
 <template>
+<div class="container-fluid">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="overview-content-wrap card-box-style">
+                                    <div class="overview-content d-flex justify-content-between align-items-center">
+                                        <div class="overview-title">
+                                            <h3>Audience Overview</h3>
+                                        </div>
+                                    </div>
+                                    <div class="audience-content-wrap">
+                                    <apexchart  type="line" :options="options" :series="series"></apexchart>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="traffic-content card-box-style">
+                                    <div class="main-title d-flex justify-content-between align-items-center">
+                                        <h3>Traffic Channel</h3>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
   <v-container>
     <v-row class="text-center">
       <v-col cols="12">
         <v-img
-          :src="require('../assets/logo.svg')"
+          :src="'../assets/logo.svg'"
           class="my-3"
           contain
           height="200"
@@ -101,6 +127,21 @@ export default defineComponent({
 
   data () {
     return {
+      options: {
+        stroke: {
+          curve: 'straight',
+        },
+        chart: {
+          id: 'vuechart-example'
+        },
+        xaxis: {
+          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+        }
+      },
+      series: [{
+        name: 'series-1',
+        data: [30, 40, 45, 50, 49, 60, 70, 91]
+      }],
       ecosystem: [
         {
           text: 'vuetify-loader',

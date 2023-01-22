@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import VueApexCharts from "vue3-apexcharts";
 import PrimeVue from 'primevue/config';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
@@ -16,6 +17,7 @@ createApp(App).use(router)
   .use(store)
   .use(PrimeVue)
   .use(ToastService)
+  .use(VueApexCharts)
   .component('Toast', Toast)
   .component('Button', Button)
   .component('Password', Password)

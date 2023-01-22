@@ -7,7 +7,7 @@
                </div>
               <form @submit.prevent="handleSubmit(!v$.$invalid)" class="account-wrap">     
                   <div class="form-group mb-24 icon p-input-icon-left">
-                      <i class="pi pi-search" />
+                      <i class="pi pi-email" />
                       <InputText type="text" id="email" v-model="v$.email.$model" :class="{'p-invalid':v$.email.$invalid && submitted}" aria-describedby="email-error" class="form-control" />
                   </div>                  
                   <div class="form-group mb-24 icon p-input-icon-left">
@@ -91,22 +91,30 @@ methods: {
 </script>
 
 <style lang="scss" scoped>
+.form-control {
+  padding-left: 25px;
+}
 .form-group {
   &.mb-24 {
-      width: 100%;
-      margin-bottom: 24px;
+    width: 100%;
+    margin-bottom: 24px;
   }
   .p-password {
-      width: 100%;
+    width: 100%;
   }
   &.icon .pi {
-      position: absolute;
-      top: 32px;
-      left: 20px;
+    position: absolute;
+    left: 8px;
+    top: 22px;
+    font-size: 14px;
   }
 }
 .account-area {
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
   padding-top: 50px;
   padding-bottom: 50px;
   background: rgb(39,127,224);

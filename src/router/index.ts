@@ -10,7 +10,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'home',
     component: HomeView,
-    props: { isLogin: false}
+    beforeEnter: checkAuth
   },
   {
     path: '/signup',
@@ -26,6 +26,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/profile',
     name: 'profile',
     component: Profile,
+    beforeEnter: checkAuth
   }
 ]
 
@@ -33,15 +34,14 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
-
-/*router.beforeEach((to, from, next) => {
+function checkAuth(to: any, from: any, next: any) {
   const isLoggedIn = localStorage.getItem('accessToken');
-    console.log(isLoggedIn)
-  if (!!isLoggedIn) {
-    next('/signup');
-  } else {
-    next()
+  store.dispatch('auth/checkToken')
+   if (!!isLoggedIn) {
+    next();
+   } else { 
+    next("/signup");
   }
-})*/
+}
 
 export default router

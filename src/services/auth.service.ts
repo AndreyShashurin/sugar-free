@@ -5,7 +5,7 @@ import md5 from 'js-md5'
 
 const API_URL = 'http://80.249.150.220/auth/';
 const headers = {
-  'Content-Type': 'application/json;charset=UTF-8',
+  'Content-Type': 'application/json;',
   'Access-Control-Allow-Origin': '*'
 }
 class AuthService {
@@ -26,7 +26,7 @@ class AuthService {
     localStorage.removeItem('accessToken');
   }
   register(user: any) {
-    return axios.post(API_URL + 'signup/', {
+    return axios.post(API_URL + 'signup', {
       username: user.username,
       email: user.email,
       password: md5(user.password)
